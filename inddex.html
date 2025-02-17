@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мини-приложение</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .form-container, .menu-container {
+            max-width: 300px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        .error {
+            color: red;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container" id="authForm">
+        <h2>Авторизация</h2>
+        <input type="text" id="phone" placeholder="Номер телефона" required>
+        <input type="password" id="password" placeholder="Пароль" required>
+        <button onclick="login()">Войти</button>
+        <p class="error hidden" id="errorMessage">Ошибка авторизации</p>
+    </div>
+
+    <div class="menu-container hidden" id="menu">
+        <h2>Меню</h2>
+        <button onclick="showContent('Сапсан')">Сапсан</button>
+        <button onclick="showContent('Ласточка')">Ласточка</button>
+        <button onclick="showContent('Нестандартные ситуации')">Нестандартные ситуации</button>
+        <button onclick="showContent('Документация')">Документация</button>
+    </div>
+
+    <script>
+        // Функция для отправки данных на сервер
+        async function login() {
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('https://most.ucdoss.ru/gate.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ phone, password })
+            });
+
+            const data = await response.json();
+
+            if (data.token) {
+                // Успешная авторизация
+                document.getElementById('authForm').classList.add('hidden');
+                document.getElementById('menu').classList.remove('hidden');
+            } else {
+                // Ошибка авторизации
+                document.getElementById('errorMessage').classList.remove('hidden');
+            }
+        }
+
+        // Функция для отображения контента
+        function showContent(content) {
+            alert(`Вы выбрали: ${content}`);
+        }
+    </script>
+</body>
+</html>
